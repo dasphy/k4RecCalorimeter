@@ -636,18 +636,28 @@ StatusCode AugmentClustersFCCee::execute([[maybe_unused]] const EventContext &ev
           if (m_do_widthTheta_logE_weights) {
             double w_theta2 = theta2_E_layer[layer+startPositionToFill] / sumWeightLayer[layer+startPositionToFill] - std::pow(theta_E_layer[layer+startPositionToFill] / sumWeightLayer[layer+startPositionToFill], 2);
             // Correct very small but negative values caused by computational precision
-            if (w_theta2 < 0. && w_theta2 > -1e-9)    w_theta2 = 0. ;
-            width_theta[layer+startPositionToFill] = (sumWeightLayer[layer+startPositionToFill] > 0.) ? sqrt(w_theta2) : 0. ;
+            if (w_theta2 < 0. && w_theta2 > -1e-9) {
+              warning() << "w_theta2 in theta width calculation is negative: " << w_theta2 << ", setting it to 0." << endmsg;
+              w_theta2 = 0. ;
+            }
+            width_theta[layer+startPositionToFill] = (sumWeightLayer[layer+startPositionToFill] > 0.) ? std::sqrt(w_theta2) : 0. ;
           } else {
             double w_theta2 = theta2_E_layer[layer+startPositionToFill] / sumEnLayer[layer+startPositionToFill] - std::pow(theta_E_layer[layer+startPositionToFill] / sumEnLayer[layer+startPositionToFill], 2);
-            if (w_theta2 < 0. && w_theta2 > -1e-9)    w_theta2 = 0. ;
-            width_theta[layer+startPositionToFill] = (sumEnLayer[layer+startPositionToFill] > 0.) ? sqrt(w_theta2) : 0. ;
+            // Correct very small but negative values caused by computational precision
+            if (w_theta2 < 0. && w_theta2 > -1e-9) {
+              warning() << "w_theta2 in theta width calculation is negative: " << w_theta2 << ", setting it to 0." << endmsg;
+              w_theta2 = 0. ;
+            }
+            width_theta[layer+startPositionToFill] = (sumEnLayer[layer+startPositionToFill] > 0.) ? std::sqrt(w_theta2) : 0. ;
 	  }
 
           double w_module2 = module2_E_layer[layer+startPositionToFill] / sumEnLayer[layer+startPositionToFill] - std::pow(module_E_layer[layer+startPositionToFill] / sumEnLayer[layer+startPositionToFill], 2);
           // Correct very small but negative values caused by computational precision
-          if (w_module2 < 0. && w_module2 > -1e-9)    w_module2 = 0. ;
-          width_module[layer+startPositionToFill] = (sumEnLayer[layer+startPositionToFill] > 0.) ? sqrt(w_module2) : 0. ;
+          if (w_module2 < 0. && w_module2 > -1e-9) {
+            warning() << "w_module2 in module width calculation is negative: " << w_module2 << ", setting it to 0." << endmsg;
+            w_module2 = 0. ;
+          }
+          width_module[layer+startPositionToFill] = (sumEnLayer[layer+startPositionToFill] > 0.) ? std::sqrt(w_module2) : 0. ;
 
           double Ratio_E = (E_cell_Max[layer+startPositionToFill] - E_cell_secMax[layer+startPositionToFill]) /
                            (E_cell_Max[layer+startPositionToFill] + E_cell_secMax[layer+startPositionToFill]);
@@ -776,15 +786,27 @@ StatusCode AugmentClustersFCCee::execute([[maybe_unused]] const EventContext &ev
               double _w_theta_7Bin2 = theta2_E_7Bin / sum_weightLog_7Bin - std::pow(theta_E_7Bin / sum_weightLog_7Bin, 2);
               double _w_theta_9Bin2 = theta2_E_9Bin / sum_weightLog_9Bin - std::pow(theta_E_9Bin / sum_weightLog_9Bin, 2);
               // Correct very small but negative values caused by computational precision
-              if (_w_theta_3Bin2 < 0. && _w_theta_3Bin2 > -1e-9)    _w_theta_3Bin2 = 0. ;
-              if (_w_theta_5Bin2 < 0. && _w_theta_5Bin2 > -1e-9)    _w_theta_5Bin2 = 0. ;
-              if (_w_theta_7Bin2 < 0. && _w_theta_7Bin2 > -1e-9)    _w_theta_7Bin2 = 0. ;
-              if (_w_theta_9Bin2 < 0. && _w_theta_9Bin2 > -1e-9)    _w_theta_9Bin2 = 0. ;
+              if (_w_theta_3Bin2 < 0. && _w_theta_3Bin2 > -1e-9) {
+                warning() << "_w_theta_3Bin2 in theta width calculation is negative: " << _w_theta_3Bin2 << ", setting it to 0." << endmsg;
+                _w_theta_3Bin2 = 0. ;
+              }
+              if (_w_theta_5Bin2 < 0. && _w_theta_5Bin2 > -1e-9) {
+                warning() << "_w_theta_5Bin2 in theta width calculation is negative: " << _w_theta_5Bin2 << ", setting it to 0." << endmsg;
+                _w_theta_5Bin2 = 0. ;
+              }
+              if (_w_theta_7Bin2 < 0. && _w_theta_7Bin2 > -1e-9) {
+                warning() << "_w_theta_7Bin2 in theta width calculation is negative: " << _w_theta_7Bin2 << ", setting it to 0." << endmsg;
+                _w_theta_7Bin2 = 0. ;
+              }
+              if (_w_theta_9Bin2 < 0. && _w_theta_9Bin2 > -1e-9) {
+                warning() << "_w_theta_9Bin2 in theta width calculation is negative: " << _w_theta_9Bin2 << ", setting it to 0." << endmsg;
+                _w_theta_9Bin2 = 0. ;
+              }
 
-              width_theta_3Bin[layer+startPositionToFill] = (sum_weightLog_3Bin > 0.) ? sqrt(_w_theta_3Bin2) : 0. ;
-              width_theta_5Bin[layer+startPositionToFill] = (sum_weightLog_5Bin > 0.) ? sqrt(_w_theta_5Bin2) : 0. ;
-              width_theta_7Bin[layer+startPositionToFill] = (sum_weightLog_7Bin > 0.) ? sqrt(_w_theta_7Bin2) : 0. ;
-              width_theta_9Bin[layer+startPositionToFill] = (sum_weightLog_9Bin > 0.) ? sqrt(_w_theta_9Bin2) : 0. ;
+              width_theta_3Bin[layer+startPositionToFill] = (sum_weightLog_3Bin > 0.) ? std::sqrt(_w_theta_3Bin2) : 0. ;
+              width_theta_5Bin[layer+startPositionToFill] = (sum_weightLog_5Bin > 0.) ? std::sqrt(_w_theta_5Bin2) : 0. ;
+              width_theta_7Bin[layer+startPositionToFill] = (sum_weightLog_7Bin > 0.) ? std::sqrt(_w_theta_7Bin2) : 0. ;
+              width_theta_9Bin[layer+startPositionToFill] = (sum_weightLog_9Bin > 0.) ? std::sqrt(_w_theta_9Bin2) : 0. ;
             } else {
               double theta2_E_3Bin = theta_m1 * theta_m1 * E_m1 + E_cell_Max_theta[layer+startPositionToFill] * E_cell_Max_theta[layer+startPositionToFill] * E_cell_Max[layer+startPositionToFill] + theta_p1 * theta_p1 * E_p1;
               double theta_E_3Bin = theta_m1 * E_m1 + E_cell_Max_theta[layer+startPositionToFill] * E_cell_Max[layer+startPositionToFill] + theta_p1 * E_p1;
@@ -800,15 +822,27 @@ StatusCode AugmentClustersFCCee::execute([[maybe_unused]] const EventContext &ev
               double _w_theta_7Bin2 = theta2_E_7Bin / sum_E_7Bin - std::pow(theta_E_7Bin / sum_E_7Bin, 2);
               double _w_theta_9Bin2 = theta2_E_9Bin / sum_E_9Bin - std::pow(theta_E_9Bin / sum_E_9Bin, 2);
               // Correct very small but negative values caused by computational precision
-              if (_w_theta_3Bin2 < 0. && _w_theta_3Bin2 > -1e-9)    _w_theta_3Bin2 = 0. ;
-              if (_w_theta_5Bin2 < 0. && _w_theta_5Bin2 > -1e-9)    _w_theta_5Bin2 = 0. ;
-              if (_w_theta_7Bin2 < 0. && _w_theta_7Bin2 > -1e-9)    _w_theta_7Bin2 = 0. ;
-              if (_w_theta_9Bin2 < 0. && _w_theta_9Bin2 > -1e-9)    _w_theta_9Bin2 = 0. ;
+              if (_w_theta_3Bin2 < 0. && _w_theta_3Bin2 > -1e-9) {
+                warning() << "_w_theta_3Bin2 in theta width calculation is negative: " << _w_theta_3Bin2 << ", setting it to 0." << endmsg;
+                _w_theta_3Bin2 = 0. ;
+              }
+              if (_w_theta_5Bin2 < 0. && _w_theta_5Bin2 > -1e-9) {
+                warning() << "_w_theta_5Bin2 in theta width calculation is negative: " << _w_theta_5Bin2 << ", setting it to 0." << endmsg;
+                _w_theta_5Bin2 = 0. ;
+              }
+              if (_w_theta_7Bin2 < 0. && _w_theta_7Bin2 > -1e-9) {
+                warning() << "_w_theta_7Bin2 in theta width calculation is negative: " << _w_theta_7Bin2 << ", setting it to 0." << endmsg;
+                _w_theta_7Bin2 = 0. ;
+              }
+              if (_w_theta_9Bin2 < 0. && _w_theta_9Bin2 > -1e-9) {
+                warning() << "_w_theta_9Bin2 in theta width calculation is negative: " << _w_theta_9Bin2 << ", setting it to 0." << endmsg;
+                _w_theta_9Bin2 = 0. ;
+              }
 
-              width_theta_3Bin[layer+startPositionToFill] = (sum_E_3Bin > 0.) ? sqrt(_w_theta_3Bin2) : 0. ;
-              width_theta_5Bin[layer+startPositionToFill] = (sum_E_5Bin > 0.) ? sqrt(_w_theta_5Bin2) : 0. ;
-              width_theta_7Bin[layer+startPositionToFill] = (sum_E_7Bin > 0.) ? sqrt(_w_theta_7Bin2) : 0. ;
-              width_theta_9Bin[layer+startPositionToFill] = (sum_E_9Bin > 0.) ? sqrt(_w_theta_9Bin2) : 0. ;
+              width_theta_3Bin[layer+startPositionToFill] = (sum_E_3Bin > 0.) ? std::sqrt(_w_theta_3Bin2) : 0. ;
+              width_theta_5Bin[layer+startPositionToFill] = (sum_E_5Bin > 0.) ? std::sqrt(_w_theta_5Bin2) : 0. ;
+              width_theta_7Bin[layer+startPositionToFill] = (sum_E_7Bin > 0.) ? std::sqrt(_w_theta_7Bin2) : 0. ;
+              width_theta_9Bin[layer+startPositionToFill] = (sum_E_9Bin > 0.) ? std::sqrt(_w_theta_9Bin2) : 0. ;
             }
             E_fr_side_pm2[layer+startPositionToFill] = (sum_E_3Bin > 0.) ? (sum_E_5Bin / sum_E_3Bin - 1.) : 0. ;
             E_fr_side_pm3[layer+startPositionToFill] = (sum_E_3Bin > 0.) ? (sum_E_7Bin / sum_E_3Bin - 1.) : 0. ;
